@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Home Assistant系统部署与HomeKit桥接配置指南</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>
+
+  body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Heiti SC", sans-serif;
+      line-height: 1.6;
+      color: #2d3748;
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #f7fafc;
+  }
+  .container {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  h1, h2, h3 {
+      color: #1a365d;
+      font-weight: 700;
+  }
+  h1 {
+      font-size: 2.25rem;
+      border-bottom: 3px solid #3182ce;
+      padding-bottom: 12px;
+      margin-bottom: 30px;
+  }
+  h2 {
+      font-size: 1.6rem;
+      margin-top: 40px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 8px;
+      color: #2b6cb0;
+  }
+  h3 {
+      font-size: 1.25rem;
+      margin-top: 25px;
+  }
+  a {
+      color: #3182ce;
+      text-decoration: none;
+  }
+  a:hover {
+      text-decoration: underline;
+  }
+  table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+      font-size: 0.9rem;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  }
+  th, td {
+      border: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+  }
+  th {
+      background-color: #ebf8ff;
+      color: #2b6cb0;
+      font-weight: bold;
+  }
+  tr:nth-child(even) {
+      background-color: #f8fafc;
+  }
+  code {
+      font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+      background-color: #edf2f7;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      color: #c53030;
+  }
+  pre {
+      background-color: #2d3748;
+      color: #f7fafc;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+  }
+  pre code {
+      background-color: transparent;
+      padding: 0;
+      color: inherit;
+      font-size: 0.9em;
+  }
+  blockquote {
+      border-left: 4px solid #3182ce;
+      background-color: #ebf8ff;
+      margin: 20px 0;
+      padding: 15px 20px;
+      border-radius: 0 4px 4px 0;
+      color: #2d3748;
+  }
+  ul, ol {
+      padding-left: 20px;
+      margin-bottom: 20px;
+  }
+  li {
+      margin-bottom: 6px;
+  }
+  hr {
+      border: 0;
+      border-top: 1px solid #e2e8f0;
+      margin: 30px 0;
+  }
+
+  </style>
+</head>
+<body>
+<div class="container">
+<header id="title-block-header">
+<h1 class="title">Home Assistant系统部署与HomeKit桥接配置指南</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#home-assistant系统部署与homekit桥接配置指南"
+id="toc-home-assistant系统部署与homekit桥接配置指南">Home
+Assistant系统部署与HomeKit桥接配置指南</a>
+<ul>
+<li><a href="#一-ha系统的安装与部署方案比较"
+id="toc-一-ha系统的安装与部署方案比较">一、
+HA系统的安装与部署方案比较</a>
+<ul>
+<li><a href="#为什么极力推荐部署-haos-home-assistant-os-级别"
+id="toc-为什么极力推荐部署-haos-home-assistant-os-级别">1.
+为什么极力推荐部署 HAOS (Home Assistant OS) 级别？</a></li>
+<li><a href="#部署方案对比群晖-nas-vmm-vs.-mac-mini-utm"
+id="toc-部署方案对比群晖-nas-vmm-vs.-mac-mini-utm">2. 部署方案对比：群晖
+NAS (VMM) vs. Mac mini (UTM)</a></li>
+<li><a href="#网络避坑指南静态-ip-绑定"
+id="toc-网络避坑指南静态-ip-绑定">3. 网络避坑指南：静态 IP 绑定</a></li>
+</ul></li>
+<li><a href="#二-hacs-及小米插件的安装与接入"
+id="toc-二-hacs-及小米插件的安装与接入">二、 HACS
+及小米插件的安装与接入</a>
+<ul>
+<li><a href="#hacs-社区商店-安装步骤" id="toc-hacs-社区商店-安装步骤">1.
+HACS (社区商店) 安装步骤</a></li>
+<li><a href="#xiaomi-miot-auto-插件的安装"
+id="toc-xiaomi-miot-auto-插件的安装">2. Xiaomi Miot Auto
+插件的安装</a></li>
+<li><a href="#米家设备接入与本地化模式选择"
+id="toc-米家设备接入与本地化模式选择">3.
+米家设备接入与本地化模式选择</a></li>
+</ul></li>
+<li><a href="#三-暖通空调-vrf网关-本地接入"
+id="toc-三-暖通空调-vrf网关-本地接入">三、 暖通空调 (VRF网关)
+本地接入</a>
+<ul>
+<li><a href="#vrf-网关工作原理" id="toc-vrf-网关工作原理">1. VRF
+网关工作原理</a></li>
+<li><a href="#modbustcp-配置实例" id="toc-modbustcp-配置实例">2.
+Modbus/TCP 配置实例</a></li>
+</ul></li>
+<li><a href="#四-homekit-bridge-桥接与-apple-home-联动"
+id="toc-四-homekit-bridge-桥接与-apple-home-联动">四、 HomeKit Bridge
+桥接与 Apple Home 联动</a>
+<ul>
+<li><a href="#添加-homekit-bridge-集成"
+id="toc-添加-homekit-bridge-集成">1. 添加 HomeKit Bridge 集成</a></li>
+<li><a href="#强力建议使用筛选功能包含模式"
+id="toc-强力建议使用筛选功能包含模式">2.
+强力建议：使用“筛选功能”（包含模式）</a></li>
+<li><a href="#扫码绑定与苹果中枢-home-hub-角色"
+id="toc-扫码绑定与苹果中枢-home-hub-角色">3. 扫码绑定与苹果中枢 (Home
+Hub) 角色</a></li>
+</ul></li>
+<li><a href="#五-故障排查与维护建议" id="toc-五-故障排查与维护建议">五、
+故障排查与维护建议</a>
+<ul>
+<li><a href="#设备响应卡顿延迟高" id="toc-设备响应卡顿延迟高">1.
+设备响应卡顿/延迟高</a></li>
+<li><a href="#siri-提示设备无响应或家庭-app-中显示未响应"
+id="toc-siri-提示设备无响应或家庭-app-中显示未响应">2. Siri
+提示“设备无响应”或家庭 App 中显示“未响应”</a></li>
+<li><a href="#ip-地址冲突或变更" id="toc-ip-地址冲突或变更">3. IP
+地址冲突或变更</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="home-assistant系统部署与homekit桥接配置指南">Home
+Assistant系统部署与HomeKit桥接配置指南</h1>
+<p>本指南旨在为全屋智能方案设计提供一份标准化、实操性极强的部署与配置参考。通过将
+Home Assistant（以下简称 HA）作为本地智能中枢，并桥接至 Apple
+Home（HomeKit）生态，实现兼顾<strong>本地控制的高响应性</strong>与<strong>苹果生态的极致用户体验</strong>。</p>
+<hr />
+<h2 id="一-ha系统的安装与部署方案比较">一、
+HA系统的安装与部署方案比较</h2>
+<p>在规划全屋智能系统时，中枢服务器的稳定性至关重要。Home Assistant
+提供了多种部署方式，包括 HAOS (Home Assistant OS)、Supervised、Container
+(Docker 容器) 和 Core (直接运行在 Python 环境)。</p>
+<h3 id="为什么极力推荐部署-haos-home-assistant-os-级别">1.
+为什么极力推荐部署 HAOS (Home Assistant OS) 级别？</h3>
+<p>对于绝大多数智能家居用户及安装商，<strong>HAOS
+是唯一推荐的生产环境部署方案</strong>。其核心优势如下：</p>
+<ul>
+<li><strong>独立的 Add-on（插件）商店</strong>：HAOS 拥有独立且完善的
+Add-on 机制。用户可以一键安装并管理常用辅助组件（如
+<code>Samba Share</code> 用于修改文件、<code>Terminal &amp; SSH</code>
+用于终端控制、<code>Node-RED</code>
+用于高级流自动化、<code>Mosquitto MQTT</code> 代理等）。若采用 Docker
+部署，这些组件都需要手动拉取镜像、配置端口映射与卷挂载，维护成本极高。</li>
+<li><strong>极致简单的备份与恢复（Backup）</strong>：HAOS
+支持全局整机备份。只需在控制台点击“创建备份”，系统即可将所有集成配置、历史数据库、自动化规则以及
+Add-on 插件的数据打包成一个 <code>.tar</code> 文件。在新机器上部署 HAOS
+时，只需在初始界面上传该备份文件，即可在几分钟内 100% 还原系统。</li>
+<li><strong>系统级自动更新与修复</strong>：HAOS 作为一个精简安全的定制
+Linux 系统，由官方团队负责内核和底层依赖的更新，极大降低了因为底层库（如
+Python 版本冲突）导致系统崩溃的概率。</li>
+</ul>
+<h3 id="部署方案对比群晖-nas-vmm-vs.-mac-mini-utm">2. 部署方案对比：群晖
+NAS (VMM) vs. Mac mini (UTM)</h3>
+<p>针对不同的家庭硬件环境，通常有以下两种主流的 x86/ARM
+虚拟化部署方案：</p>
+<h4 id="方案-a群晖-nas-通过-vmm-安装-haos">方案 A：群晖 NAS (通过 VMM
+安装 HAOS)</h4>
+<p><strong>适用场景</strong>：家中已有群晖 NAS（且为 x86 架构的 Plus
+系列，如 DS920+, DS923+ 等），希望实现硬件复用。</p>
+<pre><code>+-------------------------------------------------------------+
+| 群晖 DSM 系统                                                |
+|  +-------------------------------------------------------+  |
+|  | Virtual Machine Manager (VMM)                         |  |
+|  |  +-------------------------------------------------+  |  |
+|  |  | Home Assistant OS (虚拟引导: UEFI, 网卡: 物理网桥)  |  |  |
+|  |  +-------------------------------------------------+  |  |
+|  +-------------------------------------------------------+  |
++-------------------------------------------------------------+</code></pre>
+<p><strong>具体安装步骤</strong>： 1. <strong>下载镜像</strong>：访问
+Home Assistant 官网，下载最新的 KVM/Proxmox
+虚拟机镜像（<code>.qcow2</code> 格式）或虚拟包（<code>.ova</code>
+格式）。 2. <strong>安装 VMM 套件</strong>：在群晖套件中心搜索并安装
+<code>Virtual Machine Manager</code>。 3.
+<strong>导入硬盘映像</strong>： * 打开 VMM -&gt; 点击左侧的“映像” -&gt;
+选择“硬盘映像” -&gt; 点击“新增”。 * 选择“从计算机上传文件”或“从 DSM
+选择文件”，将下载好的 HAOS <code>.qcow2</code> 映像导入。 4.
+<strong>创建虚拟机</strong>： * 点击左侧“虚拟机” -&gt;
+“新增”旁边的下拉箭头 -&gt; 选择“导入”。 *
+选择“从硬盘映像导入”，并选择刚才导入的映像。 *
+<strong>配置规格</strong>：建议分配至少 <strong>2 核 CPU</strong> 和
+<strong>2GB - 4GB 内存</strong>，存储空间分配至少
+<strong>32GB</strong>（推荐 64GB，避免历史数据填满硬盘）。 *
+<strong>配置网络</strong>：选择默认的
+<code>VM Network</code>。<strong>非常重要</strong>：请确保该虚拟网卡绑定的是群晖的<strong>物理网桥
+(Bridge)</strong>，而不是 NAT 模式。这样虚拟机才能获取局域网的独立 IP。
+* <strong>其它设置</strong>： * <strong>引导固件</strong>：必须修改为
+<strong><code>UEFI</code></strong>（HAOS 无法在传统的 Legacy BIOS
+下引导）。 *
+<strong>自启动</strong>：勾选“开机时自动启动”，确保群晖断电重启后 HA
+能同步恢复。 5. <strong>启动与访问</strong>：点击“开机”。等待 2-3
+分钟，在虚拟机列表中可以看到其分配到的局域网 IP。在浏览器中输入
+<code>http://&lt;虚拟机IP&gt;:8123</code> 即可进入初始化页面。</p>
+<h4 id="方案-bmac-mini-通过-utm-虚拟机安装-haos">方案 B：Mac mini (通过
+UTM 虚拟机安装 HAOS)</h4>
+<p><strong>适用场景</strong>：家中有闲置的 Mac mini（Intel 芯片或 Apple
+Silicon M1/M2/M3
+芯片），希望其作为高算力、低功耗的独立智能家居网关。</p>
+<pre><code>+-------------------------------------------------------------+
+| macOS 系统 (Mac mini 24小时开机)                             |
+|  +-------------------------------------------------------+  |
+|  | UTM 虚拟机软件 (基于 QEMU)                             |  |
+|  |  +-------------------------------------------------+  |  |
+|  |  | Home Assistant OS (网卡模式: Bridged, 自动开机启动) |  |  |
+|  |  +-------------------------------------------------+  |  |
+|  +-------------------------------------------------------+  |
++-------------------------------------------------------------+</code></pre>
+<p><strong>具体安装步骤</strong>： 1. <strong>安装 UTM</strong>：从官网
+<a href="https://getutm.app/">getutm.app</a> 或 Mac App Store 下载并安装
+UTM（基于 QEMU 的开源虚拟化工具）。 2. <strong>下载 ARM64
+镜像</strong>（以 Apple Silicon 芯片 Mac 为例）： * 在 HA 官网下载
+<code>Alternative</code> 部署分类下的
+<code>haos_generic-aarch64-*.qcow2.xz</code> 镜像。 * 解压得到
+<code>.qcow2</code> 文件。 3. <strong>新建 UTM 虚拟机</strong>： * 打开
+UTM，点击 <code>Create a New Virtual Machine</code>。 * 选择
+<code>Virtualize</code>（虚拟化）。 * 选择 <code>Linux</code>。 * 在
+<code>Boot Image</code> 处，勾选
+<code>Import IRS / kernel</code>，并将下载的
+<code>haos_generic-aarch64-*.qcow2</code> 硬盘映像导入为系统盘。 *
+<strong>分配资源</strong>：内存建议分配 <strong>4GB</strong>，CPU
+核心分配 <strong>2 - 4 核</strong>。 *
+<strong>网络设置（关键）</strong>：在 Network 选项卡中，将
+<code>Network Mode</code> 从默认的 <code>Shared Network</code> (NAT)
+修改为 <strong><code>Bridged (Advanced)</code></strong>。并在下方的
+Bridged Interface 中选择 Mac mini 正在使用的网络接口（如以太网网卡
+<code>en0</code>）。如果误用 Shared Network，HA
+将处于虚拟机内部的私有子网，导致无法扫描和接入局域网内的智能设备。 *
+保存并保存虚拟机配置。 4. <strong>配置系统自启</strong>：在 UTM
+的偏好设置中，开启“启动 UTM 时自动运行虚拟机”，并在 macOS 的“系统设置”
+-&gt; “通用” -&gt; “登录项”中，将 UTM 添加为开机自启项。 5.
+<strong>启动与访问</strong>：运行虚拟机，控制台将输出 Linux
+引导日志，当出现 Home Assistant
+欢迎字样时，即可在局域网其它设备的浏览器中访问
+<code>http://homeassistant.local:8123</code> 或屏幕上显示的实际 IP
+地址。</p>
+<hr />
+<h3 id="网络避坑指南静态-ip-绑定">3. 网络避坑指南：静态 IP 绑定</h3>
+<p>为了防止路由器重启或租约到期导致 HA 主机的局域网 IP
+地址发生变更，<strong>必须在主路由器后台为 HA 主机绑定静态
+IP</strong>。</p>
+<p><strong>操作步骤</strong>： 1. <strong>记录 MAC 地址</strong>： *
+在群晖 VMM 中，查看该虚拟机的网卡详情，记录其 MAC 地址（如
+<code>02:11:32:XX:XX:XX</code>）。 *
+或者在路由器管理后台的“在线设备列表”中，根据当前占用的 <code>8123</code>
+端口找到对应的主机，复制其 MAC 地址。 2. <strong>绑定静态 IP</strong>：
+* 登录路由器后台（例如小米路由器管理页面：<code>192.168.31.1</code>）。
+* 进入“常用设置” -&gt; “局域网设置” -&gt; “DHCP 静态 IP
+分配”（部分路由器名为“IP 与 MAC 绑定”）。 * 点击“添加”，输入 HA 主机的
+MAC 地址，并指定一个未被占用的固定 IP（如
+<code>192.168.31.250</code>）。 3. <strong>生效验证</strong>： *
+在路由器上保存配置并应用。 * 重启群晖 VMM 中的 HA 虚拟机，或重启 UTM
+虚拟机。 * 确认虚拟机重启后，成功获取到了绑定的
+<code>192.168.31.250</code> 地址。</p>
+<hr />
+<h2 id="二-hacs-及小米插件的安装与接入">二、 HACS
+及小米插件的安装与接入</h2>
+<p>小米生态（米家）是国内最常用的全屋智能硬件生态。为了将米家设备接入
+Home Assistant，我们需要通过 <strong>HACS（社区商店）</strong>
+安装核心插件 <strong><code>Xiaomi Miot Auto</code></strong>。</p>
+<h3 id="hacs-社区商店-安装步骤">1. HACS (社区商店) 安装步骤</h3>
+<p>HACS 是管理第三方集成的桥梁，以下是官方推荐的终端脚本安装方法：</p>
+<pre><code>+------------------+     SSH 运行一键脚本     +-----------------------+     重启并添加集成     +-------------------------+
+| HA 终端 Terminal  | ----------------------&gt; | HACS 文件下载至 local  | ---------------------&gt; | 输入 GitHub 8位码授权     |
++------------------+                          +-----------------------+                        +-------------------------+</code></pre>
+<ol type="1">
+<li><strong>安装 Terminal &amp; SSH 插件</strong>：
+<ul>
+<li>进入 HA 的“配置” -&gt; “加载项”（Add-ons）-&gt;
+点击右下角的“加载项商店”。</li>
+<li>搜索 <code>Terminal &amp; SSH</code> 插件，点击并安装。</li>
+<li>安装完成后，勾选“在侧边栏显示”，点击“启动”。</li>
+</ul></li>
+<li><strong>执行下载脚本</strong>：
+<ul>
+<li><p>点击侧边栏的 <code>Terminal</code> 进入命令行终端。</p></li>
+<li><p>输入并运行以下一键安装命令：</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 官方默认下载命令（适合海外网络或有全局科学上网的环境）</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-O</span> <span class="at">-</span> https://get.hacs.xyz <span class="kw">|</span> <span class="fu">bash</span> <span class="at">-</span></span></code></pre></div>
+<p><em>若处于国内普通网络环境，GitHub
+访问极其缓慢或超时，请使用以下国内镜像加速脚本：</em></p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-O</span> <span class="at">-</span> https://gitee.com/hacs-china/hacs/raw/master/install.sh <span class="kw">|</span> <span class="fu">bash</span> <span class="at">-</span></span></code></pre></div></li>
+<li><p>等待终端显示类似 <code>Installation complete</code>
+的提示。</p></li>
+</ul></li>
+<li><strong>重启 Home Assistant</strong>：
+<ul>
+<li>前往“配置” -&gt; “系统” -&gt; 点击右上角“重启”按钮。选择“重启 Home
+Assistant”。</li>
+</ul></li>
+<li><strong>在集成中启用并绑定 GitHub</strong>：
+<ul>
+<li>重启完成后，前往“配置” -&gt; “设备与集成” -&gt;
+点击右下角“添加集成”。</li>
+<li>搜索 <code>HACS</code> 并且选择。</li>
+<li>勾选所有免责提示条款，点击“提交”。</li>
+<li>系统会弹出一个 8 位数的激活码（例如
+<code>ABCD-1234</code>），并给出一个 GitHub 设备激活链接。</li>
+<li>点击链接，登录您的 GitHub 账号，输入该激活码授权绑定，即可成功启用
+HACS。</li>
+</ul></li>
+</ol>
+<h3 id="xiaomi-miot-auto-插件的安装">2. Xiaomi Miot Auto 插件的安装</h3>
+<p><code>Xiaomi Miot Auto</code> 由社区大神开发，能够自动解析米家设备的
+MIoT 协议点，是目前功能最强大的接入插件。</p>
+<ol type="1">
+<li>在 HA 左侧菜单栏点击进入 <code>HACS</code> -&gt; 选择“集成
+(Integrations)”。</li>
+<li>点击右下角“浏览并下载存储库 (Explore &amp; Download
+Repositories)”。</li>
+<li>在搜索栏中输入 <code>Xiaomi Miot Auto</code>。</li>
+<li>点击搜索结果，进入插件页面，点击右下角“下载 (Download)”。</li>
+<li>下载完成后，页面会提示重启。再次前往“配置” -&gt; “系统” -&gt;
+“重启”系统。</li>
+</ol>
+<h3 id="米家设备接入与本地化模式选择">3.
+米家设备接入与本地化模式选择</h3>
+<h4 id="步骤-a设备配网与云端同步">步骤 A：设备配网与云端同步</h4>
+<p>在接入 HA 之前，请确保所有小米智能设备（如 Zigbee/蓝牙 Mesh
+传感器、Wi-Fi 开关等）已成功配网到“米家
+App”中，且工作状态正常，能被米家中的中枢网关或多模网关正常管理。</p>
+<h4 id="步骤-b在-ha-中配置-xiaomi-miot-auto-集成">步骤 B：在 HA 中配置
+Xiaomi Miot Auto 集成</h4>
+<ol type="1">
+<li>重启完成后，进入“配置” -&gt; “设备与集成” -&gt;
+点击“添加集成”。</li>
+<li>搜索 <code>Xiaomi Miot Auto</code> 并选择。</li>
+<li>选择配置方式：<strong>“账号集成 (Add device using Mi
+Account)”</strong>（极力推荐，系统会自动读取云端设备拓扑，无需手动提取
+Token）。</li>
+<li>输入小米账号（小米 ID/邮箱/手机号）与密码。服务器区域务必选择
+<strong><code>cn</code>（中国大陆）</strong>。</li>
+<li><strong>设备筛选（极其重要）</strong>：
+<ul>
+<li>登录成功后，系统会弹出设备过滤配置。</li>
+<li>选择
+<strong>“包含模式”</strong>，点击“按设备类型筛选”或“按设备列表筛选”。</li>
+<li><strong>注意</strong>：只勾选实际需要进行场景联动的硬设备（例如：灯、开关、传感器、窗帘、插座）。<strong>强烈建议排除</strong>：路由器、小爱音箱（仅作为控制接口）、扫地机地图实体、手机等。防止导入数百个无意义的垃圾实体，污染
+HA 实体库。</li>
+</ul></li>
+</ol>
+<h4 id="步骤-c核心原理与模式选择本地模式-local-的优势">步骤
+C：核心原理与模式选择（本地模式 Local 的优势）</h4>
+<p>在配置完成后，该集成会自动检测设备的网络属性，并在以下两种模式中运行：</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">模式</th>
+<th style="text-align: left;">原理说明</th>
+<th style="text-align: left;">优势</th>
+<th style="text-align: left;">劣势</th>
+<th style="text-align: left;">推荐设备类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>本地模式 (Local)</strong></td>
+<td style="text-align: left;">HA 直接通过局域网（MiIO 协议或局域网
+MIoT）与设备的局域网 IP 通信，发送控制指令和获取状态。</td>
+<td style="text-align: left;">1. 响应速度极快（通常 &lt;50ms）<br>2.
+即使家中外网断开，局域网内依然可完美控制与联动。</td>
+<td style="text-align: left;">要求设备与 HA
+在同一局域网网段下，且设备固件未封堵本地协议。</td>
+<td style="text-align: left;">Wi-Fi 开关、Wi-Fi
+灯具、各类局域网网关（多模、中枢）下挂的 Zigbee 设备。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>云端模式 (Cloud)</strong></td>
+<td style="text-align: left;">HA
+发送指令到北京的小米云端服务器，再由云端下发到家里的网关和设备。</td>
+<td style="text-align: left;">可以跨网段接入，支持无本地通信 API
+的纯蓝牙/蓝牙 Mesh 设备。</td>
+<td style="text-align: left;">1. 受宽带限制，响应延迟较高（200ms - 2s
+不等）<br>2. 断网时完全瘫痪。</td>
+<td
+style="text-align: left;">门锁（部分安全设备）、纯蓝牙温湿度计、部分不支持本地局域网接入的空净/加湿器。</td>
+</tr>
+</tbody>
+</table>
+<p><em>注：Xiaomi Miot Auto
+集成非常智能，默认会采用“自动（本地优先）”的配置，对于支持本地模式的设备，它会自动在本地获取
+Token 并自动转换为局域网本地控制，大幅提升全屋响应体验。</em></p>
+<hr />
+<h2 id="三-暖通空调-vrf网关-本地接入">三、 暖通空调 (VRF网关)
+本地接入</h2>
+<p>在高端别墅和全屋智能项目中，大金、美的、格力等品牌的中央空调（多联机
+VRF 系统）无法直接通过 Wi-Fi 配网接入。我们通常需要使用第三方的
+<strong>VRF 协议网关</strong>（如中创、涂鸦、乐橙等网关设备）。</p>
+<h3 id="vrf-网关工作原理">1. VRF 网关工作原理</h3>
+<ul>
+<li><strong>物理连接</strong>：网关的硬件接口（如
+RS485）串联连接在中央空调外机或内机的通信总线（例如大金的 F1/F2
+端口，美的的 X/Y/E 端口）上。</li>
+<li><strong>协议转换</strong>：网关在内部将中央空调厂家的私有闭源通信协议，转换为开放通用的标准
+<strong>Modbus/TCP</strong> 协议。</li>
+<li><strong>局域网接入</strong>：网关的 RJ45
+网口接入家中的局域网，并拥有一个固定 IP 地址（例如
+<code>192.168.31.200</code>）。HA 作为 Modbus 客户端，通过网络读写网关的
+Modbus
+寄存器，即可实现无云端依赖的<strong>纯本地秒级控制</strong>。</li>
+</ul>
+<pre><code>+---------------+              Modbus/TCP (局域网)             +---------------+            空调通信总线 (F1/F2 / XYE)            +---------------------+
+|  HA 智能中枢   | ==========================================&gt; |   VRF 网关    | ===========================================&gt; | 室内机 1 / 2 / 3 ...|
++---------------+                                              +---------------+                                                  +---------------------+</code></pre>
+<h3 id="modbustcp-配置实例">2. Modbus/TCP 配置实例</h3>
+<p>对于没有现成集成的 VRF 网关，我们可以在 HA 的全局配置文件
+<code>/config/configuration.yaml</code> 中编写 <code>modbus</code>
+属性来手动定义空调实体。</p>
+<p>以下是一段精简且带注释的 Modbus 暖通空调（Climate）配置范例：</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># /config/configuration.yaml</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 启用 Modbus 集成</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">modbus</span><span class="kw">:</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> vrf_ac_gateway</span><span class="co">          # 自定义 Modbus 控制器名称</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">type</span><span class="kw">:</span><span class="at"> tcp</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">host</span><span class="kw">:</span><span class="at"> </span><span class="fl">192.168.31.200</span><span class="co">          # VRF网关的局域网固定IP</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">port</span><span class="kw">:</span><span class="at"> </span><span class="dv">502</span><span class="co">                     # Modbus/TCP默认端口</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">    # 定义空调设备列表 (Climate)</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">climates</span><span class="kw">:</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;Master Bedroom AC&quot;</span><span class="co">  # 主卧空调实体名称</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">unique_id</span><span class="kw">:</span><span class="at"> master_bedroom_ac_modbus</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">slave</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span><span class="co">                   # 网关分配给主卧空调的内机物理从站地址 (Unit ID)</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="at">        </span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">        # 基础运行参数限制</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">min_temp</span><span class="kw">:</span><span class="at"> </span><span class="dv">16</span><span class="co">               # 最低温度限制</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">max_temp</span><span class="kw">:</span><span class="at"> </span><span class="dv">30</span><span class="co">               # 最高温度限制</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">target_temp_step</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span><span class="co">        # 温度调节步长</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">temperature_unit</span><span class="kw">:</span><span class="at"> C</span><span class="co">        # 摄氏度单位</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="at">        </span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co">        # 寄存器配置（以下寄存器地址与类型需根据网关厂家点表说明书严格对应）</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">input_type</span><span class="kw">:</span><span class="at"> holding</span><span class="co">        # 寄存器读写类型：保持寄存器</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="at">        </span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co">        # 1. 开关状态读写 (通常 0 代表关，1 代表开)</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">hvac_onoff_register</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span><span class="co">     # 寄存器地址 40001 (偏移量 0)</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">write_registers</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="at">        </span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co">        # 2. 设定目标温度 (通常以实际温度的10倍数值存储，如260代表26.0度)</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">target_temp_register</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span><span class="co">    # 寄存器地址 40002 (偏移量 1)</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">scale</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.1</span><span class="co">                 # 缩放系数：乘 0.1 还原为实际温度，写入时自动除以 0.1</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">data_type</span><span class="kw">:</span><span class="at"> int16</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="at">        </span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co">        # 3. 当前室内温度读取</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">current_temp_register</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span><span class="co">   # 寄存器地址 40003 (偏移量 2)</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">scale</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.1</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">data_type</span><span class="kw">:</span><span class="at"> int16</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="at">        </span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="co">        # 4. 模式切换配置 (定义不同数值代表的 HVAC 模式)</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">hvac_mode_register</span><span class="kw">:</span><span class="at"> </span><span class="dv">3</span><span class="co">      # 寄存器地址 40004 (偏移量 3)</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">hvac_modes</span><span class="kw">:</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;off&quot;</span><span class="co">                  # 值为 0</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;cool&quot;</span><span class="co">                 # 值为 1</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;heat&quot;</span><span class="co">                 # 值为 2</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;dry&quot;</span><span class="co">                  # 值为 3</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="st">&quot;fan_only&quot;</span><span class="co">             # 值为 4</span></span></code></pre></div>
+<blockquote>
+<p><strong>[IMPORTANT]</strong>
+<strong>点表核对提醒</strong>：不同品牌的协议网关，其寄存器的物理地址（偏移量
+0 还是 1
+开始）、数据高低位顺序（Endianness）、以及模式对应的数值（如冷模式是 1
+还是
+8）存在很大差异。在粘贴此配置前，<strong>请务必向前述网关厂家索取《Modbus通讯协议寄存器说明书》</strong>并进行点表校对。</p>
+</blockquote>
+<hr />
+<h2 id="四-homekit-bridge-桥接与-apple-home-联动">四、 HomeKit Bridge
+桥接与 Apple Home 联动</h2>
+<p>将设备接入 HA
+并完成本地控制后，最关键的闭环是将这些设备桥接进苹果的生态中，使 iPhone
+的控制中心、Apple Watch 以及 Siri 能够无缝且响应迅速地控制它们。</p>
+<h3 id="添加-homekit-bridge-集成">1. 添加 HomeKit Bridge 集成</h3>
+<ol type="1">
+<li>在 HA 中，前往“配置” -&gt; “设备与集成” -&gt;
+点击右下角“添加集成”。</li>
+<li>搜索并选择 <strong><code>HomeKit Bridge</code></strong>。</li>
+<li>在引导中选择你要桥接的网络接口（如果有多个虚拟网卡，务必选择物理局域网网线连接的网卡），其余保持默认，点击“提交”。</li>
+<li>此时在 HA
+的左下角通知中心会弹出一个卡片，显示一个<strong>配对二维码</strong>以及
+8 位的配对 PIN 码（格式如：<code>123-45-678</code>）。</li>
+</ol>
+<h3 id="强力建议使用筛选功能包含模式">2.
+强力建议：使用“筛选功能”（包含模式）</h3>
+<p>在首次配置或在集成页面点击“配置”时，系统会让你选择要推送的设备和域名。</p>
+<blockquote>
+<p><strong>[WARNING]</strong>
+<strong>切勿直接选择“全部推送”</strong>！如果不进行过滤，HA
+系统内部的各类虚拟实体、服务器运行状态（如 CPU
+占用率、网络流量）、更新提示、各种自动化辅助开关都会一股脑被塞进 Apple
+Home。这会导致： 1. 手机家庭 App
+首页充斥数百个无法分类的“未知感应器”和“无意义开关”，极度混乱。 2.
+配件数量过多导致 HomeKit 桥接通信负担加重，极易引起 HomeKit
+崩溃或“全部未响应”。</p>
+</blockquote>
+<p><strong>推荐过滤配置方案</strong>：</p>
+<ol type="1">
+<li>在 <code>Inclusion Mode</code>（包含模式）中，选择
+<strong><code>Include</code>（包含）</strong>。</li>
+<li>在
+<code>Domains</code>（域）中，<strong>仅勾选</strong>以下常用且适合在家庭
+App 中操作的类别：
+<ul>
+<li><code>light</code>（灯光）</li>
+<li><code>switch</code>（各类实际物理开关、插座）</li>
+<li><code>cover</code>（电动窗帘、卷帘、开窗器）</li>
+<li><code>climate</code>（空调、地暖、新风）</li>
+<li><code>sensor</code> /
+<code>binary_sensor</code>（门窗传感器、人体传感器、温湿度传感器）</li>
+</ul></li>
+<li>点击下一步，系统会允许您在上述选定域名中进一步勾选排除某些系统虚拟实体（例如
+<code>switch.backlight</code> 等背光虚拟开关），确保推送到 HomeKit
+的每一个配件都是有实际物理控制意义的。</li>
+</ol>
+<h3 id="扫码绑定与苹果中枢-home-hub-角色">3. 扫码绑定与苹果中枢 (Home
+Hub) 角色</h3>
+<h4 id="绑定步骤">绑定步骤：</h4>
+<ol type="1">
+<li>确保您的 iPhone 或 iPad 已经连接到与 HA 相同的 Wi-Fi 局域网。</li>
+<li>打开 iOS 自带的 <strong>“家庭”App</strong> -&gt; 点击右上角
+<code>+</code> 号 -&gt; 选择 <strong>“添加配件”</strong>。</li>
+<li>使用 iPhone 的摄像头扫描 HA
+通知栏中的二维码，或者点击“我没有代码或无法扫描”并手动输入
+<code>123-45-678</code> PIN 码。</li>
+<li>系统会提示“未认证的配件”，选择“仍然添加”。</li>
+<li>配对成功后，家庭 App
+会提示检测到一个“Bridge（网桥）”，随后会逐个弹出桥接过来的各个设备，引导您为它们选择房间和命名。</li>
+</ol>
+<h4 id="苹果中枢-home-hub-的联动原理">苹果中枢 (Home Hub)
+的联动原理：</h4>
+<pre><code>                              +-----------------------+
+                              |   iPhone (在户外 5G)  |
+                              +-----------------------+
+                                          |
+                                    iCloud 加密通道
+                                          v
+                              +-----------------------+
+                              | 苹果中枢 (HomeHub)     |
+                              | (HomePod / Apple TV)  |
+                              +-----------------------+
+                                          |
+                                   本地局域网 (mDNS)
+                                          v
++------------------+         本地桥接 (HomeKit API)     +-------------------+
+|  iPhone (在家里)  | ==============================&gt; | Home Assistant OS |
++------------------+                                  +-------------------+</code></pre>
+<ul>
+<li><strong>本地局域网控制</strong>：当手机在家里 Wi-Fi 网络下时，iPhone
+与 HA 的通信是<strong>纯本地</strong>的。即使外网宽带拔掉，iPhone
+依然能秒级控制 HA 中的设备。</li>
+<li><strong>远程控制（苹果中枢）</strong>：当用户离开家（如在户外使用 5G
+网络）时，iPhone 无法直接连接局域网的 HA。此时，部署在局域网内的
+<strong><code>HomePod mini</code></strong> 或
+<strong><code>Apple TV</code></strong> 将作为<strong>“苹果中枢 (Home
+Hub)”</strong>开始工作。</li>
+<li>iPhone 的控制指令先发送至苹果的 iCloud 服务器，iCloud
+将指令安全加密下发到您家中的 HomePod mini，再由 HomePod mini
+在本地局域网通过 mDNS 组播协议找到 HA，并执行控制。</li>
+<li><strong>因此，必须至少配备一台 HomePod mini 或 Apple TV，且让其 24
+小时在线，才能完美解锁远程控制、基于苹果定位的离家/回家自动化等高级功能。</strong></li>
+</ul>
+<hr />
+<h2 id="五-故障排查与维护建议">五、 故障排查与维护建议</h2>
+<h3 id="设备响应卡顿延迟高">1. 设备响应卡顿/延迟高</h3>
+<ul>
+<li><strong>可能原因 A</strong>：设备处于云端（Cloud）工作模式下。
+<ul>
+<li><strong>排查方法</strong>：进入 HA 的设备集成页面，检查 Xiaomi Miot
+Auto
+里的设备图标。如果显示云端图标或状态更新有明显卡顿，请在集成配置中确认是否能转为本地控制。如果因为跨网段（如
+HA 在 VMM
+虚拟机网段，设备在智能家居专网网段），请调整网卡设置，使其处于同一子网。</li>
+</ul></li>
+<li><strong>可能原因 B</strong>：局域网 2.4GHz 无线信道拥堵。
+<ul>
+<li><strong>排查方法</strong>：智能家居设备多使用 2.4G
+Wi-Fi。如果邻居无线信号干扰严重，会导致丢包重传。请登录路由器后台，将
+2.4G 频段的信道手动固定为 <code>1</code>、<code>6</code> 或
+<code>11</code>，并禁用“2.4G 40MHz 频宽”（改用 <code>20MHz</code>
+能提高抗干扰能力和穿墙稳定性）。</li>
+</ul></li>
+</ul>
+<h3 id="siri-提示设备无响应或家庭-app-中显示未响应">2. Siri
+提示“设备无响应”或家庭 App 中显示“未响应”</h3>
+<ul>
+<li><strong>可能原因 A</strong>：路由器屏蔽了组播流量（mDNS）。
+<ul>
+<li><strong>原因解析</strong>：Apple HomeKit 发现设备和网桥强烈依赖
+<strong>mDNS 协议</strong>（Multicast DNS）。如果主路由器开启了
+<strong>IGMP Snooping（组播监听）</strong>、<strong>组播防风暴</strong>
+或 <strong>无线用户隔离 (AP Isolation)</strong>，组播报文将被拦截，导致
+iOS 找不到 HA 网桥。</li>
+<li><strong>解决方法</strong>：登录路由器后台，关闭“无线隔离”，关闭或合理配置“IGMP
+Snooping”。</li>
+</ul></li>
+<li><strong>可能原因 B</strong>：HomeKit Bridge 服务挂起。
+<ul>
+<li><strong>解决方法</strong>：在 HA 的“设备与集成”页面中找到 HomeKit
+Bridge，点击右侧的三个点，选择 <strong>“重载
+(Reload)”</strong>。若经常出现此问题，可在 HA 的自动化中设置一个“若
+HomeKit Bridge 实体变为 unavailable 时，自动执行重载服务”的规则。</li>
+</ul></li>
+<li><strong>可能原因 C</strong>：苹果中枢（HomePod/Apple
+TV）网络延迟或掉线。
+<ul>
+<li><strong>排查方法</strong>：在 iPhone 的“家庭 App” -&gt; “家庭设置”
+-&gt; “家居中枢与网桥”中查看中枢状态，若显示“待机”或“无响应”，请拔掉
+HomePod 的电源并重新插入以重启它。</li>
+</ul></li>
+</ul>
+<h3 id="ip-地址冲突或变更">3. IP 地址冲突或变更</h3>
+<ul>
+<li><strong>故障现象</strong>：HA 突然无法控制 VRF
+网关或者无法访问米家本地设备，或者 iPhone 家庭 App
+显示“全部配件未响应”。</li>
+<li><strong>排查方法</strong>：
+<ol type="1">
+<li>确认 HA 的 IP 是否发生变化。若发生了变化，HomeKit 网桥的 IP
+地址对不上，手机客户端就会全部失效。请重新在路由器中绑定 MAC
+地址，并重启 HA 主机使其拿到之前的固定 IP。</li>
+<li>使用 <code>arp -a</code> 终端命令，或者在路由器中查看“IP
+冲突警报”，检查是否有其它设备（例如家里新连网的摄像头或电脑）占用了 VRF
+网关（如 <code>192.168.31.200</code>）或 HA 主机绑定的固定
+IP。如果存在冲突，请更改冲突设备的 IP，或将这些核心中枢设备的静态 IP
+绑定到 DHCP 地址池之外。</li>
+</ol></li>
+</ul>
+</div>
+</body>
+</html>
