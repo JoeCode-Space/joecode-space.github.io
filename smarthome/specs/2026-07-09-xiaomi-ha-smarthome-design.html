@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>115m² 全屋智能方案设计规约 (小米 + HA + Apple Home)</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <style>
+
+  body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Heiti SC", sans-serif;
+      line-height: 1.6;
+      color: #2d3748;
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #f7fafc;
+  }
+  .container {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  h1, h2, h3 {
+      color: #1a365d;
+      font-weight: 700;
+  }
+  h1 {
+      font-size: 2.25rem;
+      border-bottom: 3px solid #3182ce;
+      padding-bottom: 12px;
+      margin-bottom: 30px;
+  }
+  h2 {
+      font-size: 1.6rem;
+      margin-top: 40px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 8px;
+      color: #2b6cb0;
+  }
+  h3 {
+      font-size: 1.25rem;
+      margin-top: 25px;
+  }
+  a {
+      color: #3182ce;
+      text-decoration: none;
+  }
+  a:hover {
+      text-decoration: underline;
+  }
+  table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+      font-size: 0.9rem;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  }
+  th, td {
+      border: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+  }
+  th {
+      background-color: #ebf8ff;
+      color: #2b6cb0;
+      font-weight: bold;
+  }
+  tr:nth-child(even) {
+      background-color: #f8fafc;
+  }
+  code {
+      font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+      background-color: #edf2f7;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      color: #c53030;
+  }
+  pre {
+      background-color: #2d3748;
+      color: #f7fafc;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+  }
+  pre code {
+      background-color: transparent;
+      padding: 0;
+      color: inherit;
+      font-size: 0.9em;
+  }
+  blockquote {
+      border-left: 4px solid #3182ce;
+      background-color: #ebf8ff;
+      margin: 20px 0;
+      padding: 15px 20px;
+      border-radius: 0 4px 4px 0;
+      color: #2d3748;
+  }
+  ul, ol {
+      padding-left: 20px;
+      margin-bottom: 20px;
+  }
+  li {
+      margin-bottom: 6px;
+  }
+  hr {
+      border: 0;
+      border-top: 1px solid #e2e8f0;
+      margin: 30px 0;
+  }
+  .back-btn {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #edf2f7;
+      color: #4a5568;
+      border-radius: 4px;
+      font-weight: 600;
+  }
+  .back-btn:hover {
+      background-color: #e2e8f0;
+      text-decoration: none;
+  }
+
+  </style>
+</head>
+<body>
+<div class="container">
+<a href="../index.html" class="back-btn">⬅ 返回方案主页</a>
+
+<header id="title-block-header">
+<h1 class="title">115m² 全屋智能方案设计规约 (小米 + HA + Apple
+Home)</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#m²-全屋智能方案设计规约-小米-ha-apple-home"
+id="toc-m²-全屋智能方案设计规约-小米-ha-apple-home">115m²
+全屋智能方案设计规约 (小米 + HA + Apple Home)</a>
+<ul>
+<li><a href="#架构拓扑设计图-network-integration-topology"
+id="toc-架构拓扑设计图-network-integration-topology">架构拓扑设计图
+(Network &amp; Integration Topology)</a></li>
+<li><a href="#第一部分强弱电布线规范-全新装修水电交底"
+id="toc-第一部分强弱电布线规范-全新装修水电交底">第一部分：强弱电布线规范
+(全新装修水电交底)</a>
+<ul>
+<li><a href="#智能开关布线-强电" id="toc-智能开关布线-强电">1.
+智能开关布线 (强电)</a></li>
+<li><a href="#智能窗帘布线" id="toc-智能窗帘布线">2.
+智能窗帘布线</a></li>
+<li><a href="#空调控制布线" id="toc-空调控制布线">3.
+空调控制布线</a></li>
+</ul></li>
+<li><a href="#第二部分空间设备点位规划-room-by-room-layout"
+id="toc-第二部分空间设备点位规划-room-by-room-layout">第二部分：空间设备点位规划
+(Room-by-Room Layout)</a>
+<ul>
+<li><a href="#玄关-entrance" id="toc-玄关-entrance">1. 玄关
+(Entrance)</a></li>
+<li><a href="#客铁与阳台-living-room-balcony"
+id="toc-客铁与阳台-living-room-balcony">2. 客铁与阳台 (Living Room &amp;
+Balcony)</a></li>
+<li><a href="#餐厅-dining-room" id="toc-餐厅-dining-room">3. 餐厅
+(Dining Room)</a></li>
+<li><a href="#厨房-kitchen" id="toc-厨房-kitchen">4. 厨房
+(Kitchen)</a></li>
+<li><a href="#主卧衣帽间与主卫-master-bedroom-suite"
+id="toc-主卧衣帽间与主卫-master-bedroom-suite">5. 主卧、衣帽间与主卫
+(Master Bedroom Suite)</a></li>
+<li><a href="#公卫-bathroom-2" id="toc-公卫-bathroom-2">6. 公卫
+(Bathroom 2)</a></li>
+<li><a href="#次卧-1-与-次卧-2书房-bedrooms"
+id="toc-次卧-1-与-次卧-2书房-bedrooms">7. 次卧 1 与 次卧 2/书房
+(Bedrooms)</a></li>
+</ul></li>
+<li><a href="#第三部分系统集成与自动化场景-ha-apple-home"
+id="toc-第三部分系统集成与自动化场景-ha-apple-home">第三部分：系统集成与自动化场景
+(HA &amp; Apple Home)</a>
+<ul>
+<li><a href="#系统数据流与控制逻辑" id="toc-系统数据流与控制逻辑">1.
+系统数据流与控制逻辑</a></li>
+<li><a href="#核心智能场景设计" id="toc-核心智能场景设计">2.
+核心智能场景设计</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="m²-全屋智能方案设计规约-小米-ha-apple-home">115m²
+全屋智能方案设计规约 (小米 + HA + Apple Home)</h1>
+<p>本设计方案专为 115m²
+三室两厅双卫一阳台户型量身定制。硬件以<strong>小米米家生态</strong>为底座，通过
+<strong>Home Assistant (HA)</strong> 进行本地化桥接与逻辑中转，最终由
+<strong>Apple Home (HomeKit)</strong> 进行终端展示、Siri
+语音与场景控制。</p>
+<hr />
+<h2 id="架构拓扑设计图-network-integration-topology">架构拓扑设计图
+(Network &amp; Integration Topology)</h2>
+<p>下面的拓扑图展示了物理网络布线与智能家居系统的数据流向：</p>
+<pre class="mermaid"><code>graph TD
+    %% WAN / LAN Network
+    Fiber[&quot;光纤 (入户)&quot;] --&gt;|运营商光纤| Modem[&quot;光猫 (玄关弱电箱)&quot;]
+    Modem --&gt;|网线 1 (WAN)| Router[&quot;主路由器 (客厅电视柜)&quot;]
+    Router --&gt;|网线 2 (LAN)| Switch[&quot;2.5G 8口交换机 (玄关弱电箱)&quot;]
+
+    %% Switch Connections
+    Switch --&gt;|有线回网| SubRouter[&quot;子路由器 (书房/次卧2)&quot;]
+    Switch --&gt;|网线直连| HA_Host[&quot;HA 主机 (NAS/Mac mini 电视柜)&quot;]
+    Switch --&gt;|网线直连| Gateway[&quot;小米中枢网关 (电视柜)&quot;]
+    Switch --&gt;|网线| Room1[&quot;主卧网口&quot;]
+    Switch --&gt;|网线| Room2[&quot;次卧1网口&quot;]
+    Switch --&gt;|网线| TV[&quot;Apple TV / 电视 (电视柜)&quot;]
+
+    %% Smart Home Integration (Xiaomi -&gt; HA -&gt; HomeKit)
+    subgraph Xiaomi_Mijia [&quot;1. 小米米家生态 (硬件底座)&quot;]
+        Gateway -.-&gt;|蓝牙 Mesh| Devices[&quot;全屋智能开关/智能灯/传感器/窗帘/锁&quot;]
+    end
+
+    subgraph Home_Assistant [&quot;2. Home Assistant (中转与本地自动化)&quot;]
+        HA_Host --&gt;|Xiaomi Miot Auto 插件| HA_Core[&quot;HA 核心系统&quot;]
+        Devices -.-&gt;|状态拉取/局域网本地控制| HA_Core
+    end
+
+    subgraph Apple_Home [&quot;3. Apple Home (终端控制与Siri)&quot;]
+        HA_Core --&gt;|HomeKit Bridge 桥接| Apple_Hub[&quot;Apple HomePod mini (客厅/主卧)&quot;]
+        Apple_Hub --&gt;|本地HomeKit控制| Client[&quot;iPhone / iPad / Mac 控制端&quot;]
+    end
+
+    %% Styles
+    style Fiber fill:#f9f,stroke:#333,stroke-width:2px
+    style Modem fill:#bbf,stroke:#333,stroke-width:1px
+    style Switch fill:#bbf,stroke:#333,stroke-width:1px
+    style HA_Host fill:#f96,stroke:#333,stroke-width:2px
+    style Apple_Hub fill:#9cf,stroke:#333,stroke-width:2px</code></pre>
+<hr />
+<h2
+id="第一部分强弱电布线规范-全新装修水电交底">第一部分：强弱电布线规范
+(全新装修水电交底)</h2>
+<h3 id="智能开关布线-强电">1. 智能开关布线 (强电)</h3>
+<blockquote>
+<p><strong>[IMPORTANT]</strong>
+<strong>全屋开关底盒必须预留零线！</strong>
+传统的单火开关容易导致智能灯微亮、闪烁或断联。零火智能开关不仅工作极稳定，还能充当蓝牙
+Mesh 信号中继器，使全屋蓝牙信号无死角。</p>
+</blockquote>
+<ul>
+<li><strong>智能灯区域（客厅、主卧）：</strong>
+<ul>
+<li>光源需要“常通电”。底盒内的零线与火线直接接智能灯的电源驱动。</li>
+<li>开关底盒安装<strong>智能开关面板</strong>，接零火线但不接负载线，在软件中设置开关为“转无线开关模式”（或智能场景模式），用来给
+HA 或米家发送控制指令。</li>
+</ul></li>
+<li><strong>普通灯区域（次卧、厨卫、阳台）：</strong>
+<ul>
+<li>按照传统布线，零火线进底盒，灯具负载线（控制线）进底盒。</li>
+<li>安装<strong>智能开关面板</strong>，直接控制物理电源亮灭。</li>
+</ul></li>
+</ul>
+<h3 id="智能窗帘布线">2. 智能窗帘布线</h3>
+<ul>
+<li><strong>客厅（双轨）：</strong>
+<ul>
+<li>在窗帘盒<strong>左侧或右侧</strong>（根据柜子遮挡情况选择）预留一个<strong>双位五孔插座</strong>（或并排两个单五孔插座），供两个窗帘电机使用。</li>
+<li>窗帘盒宽度预留不低于 <strong>22cm</strong>。</li>
+</ul></li>
+<li><strong>卧室（手动）：</strong>
+<ul>
+<li>无需预留插座，窗帘盒宽度 15cm（单轨）或 20cm（双轨）即可。</li>
+</ul></li>
+</ul>
+<h3 id="空调控制布线">3. 空调控制布线</h3>
+<ul>
+<li><strong>中央空调：</strong>
+<ul>
+<li>在水电阶段，从中央空调外机主板（或室内机主板）处拉一根<strong>屏蔽双绞线（RVVSP
+2×0.75 或网线）</strong>到玄关弱电箱或电视柜。</li>
+<li>后续用于连接 <strong>VRF 网关</strong>，实现 HA
+本地控制所有内机的开关、温度、风速和模式。</li>
+</ul></li>
+</ul>
+<hr />
+<h2
+id="第二部分空间设备点位规划-room-by-room-layout">第二部分：空间设备点位规划
+(Room-by-Room Layout)</h2>
+<p>以下是根据 115m² 户型图进行的各空间智能设备及开关点位设计：</p>
+<h3 id="玄关-entrance">1. 玄关 (Entrance)</h3>
+<ul>
+<li><strong>智能门锁：</strong>
+小米人脸识别智能门锁（支持蓝牙连接，离家自动一键防盗）。</li>
+<li><strong>开关：</strong> 小米智能开关
+Pro（双开零火版）。控制玄关灯及吊顶筒灯。</li>
+<li><strong>传感器：</strong> 小米人体传感器
+2（放置于鞋柜上方，用于开门自动亮玄关灯）。</li>
+</ul>
+<h3 id="客铁与阳台-living-room-balcony">2. 客铁与阳台 (Living Room &amp;
+Balcony)</h3>
+<ul>
+<li><strong>灯光（智能无主灯）：</strong>
+<ul>
+<li>客厅吊顶防眩射灯/筒灯 + 悬浮吊顶磁吸轨道灯/线性灯带。</li>
+<li>控制方式：使用小米智能开关面板（设置为无线模式）或直接通过 Siri
+调光。</li>
+</ul></li>
+<li><strong>窗帘：</strong> 小米智能窗帘电机 2（双轨，共2个电机）。</li>
+<li><strong>传感器：</strong>
+<strong>领普/小米人在传感器（存在传感器）</strong>。安装在电视墙上方或天花板中心。能精准检测静坐看电视的人，避免普通人体传感器在人静止时关灯的尴尬。</li>
+<li><strong>空调：</strong> 中央空调温控面板。</li>
+<li><strong>阳台晾衣架：</strong> 小米智能晾衣机（自动升降，烘干，连入
+HA 联动）。</li>
+</ul>
+<h3 id="餐厅-dining-room">3. 餐厅 (Dining Room)</h3>
+<ul>
+<li><strong>灯光（普通灯具）：</strong> 餐厅吊灯 + 侧边餐边柜灯带。</li>
+<li><strong>开关：</strong> 小米智能开关
+Pro（双开，控制餐厅吊灯与柜体灯）。</li>
+</ul>
+<h3 id="厨房-kitchen">4. 厨房 (Kitchen)</h3>
+<ul>
+<li><strong>灯光：</strong> 厨房普通集成吊顶平板灯 +
+橱柜手扫感应灯带。</li>
+<li><strong>开关：</strong> 智能开关 Pro（单开，控制平板灯）。</li>
+<li><strong>传感器：</strong>
+小米水浸传感器（放置于水槽下方底柜）、小米烟雾/天然气报警器。</li>
+</ul>
+<h3 id="主卧衣帽间与主卫-master-bedroom-suite">5. 主卧、衣帽间与主卫
+(Master Bedroom Suite)</h3>
+<ul>
+<li><strong>主卧灯光（智能灯）：</strong>
+智能吸顶灯/防眩射灯，支持调光调色。床头两侧安装小米无线开关（贴墙式或双击版），用于一键关闭全屋灯光（睡眠场景）。</li>
+<li><strong>衣帽间：</strong>
+<ul>
+<li>灯光：普通吸顶灯或衣柜内感应灯带。</li>
+<li>控制：门上装门窗传感器（开门即亮灯，关门延时灭灯）。</li>
+</ul></li>
+<li><strong>主卫：</strong>
+<ul>
+<li>开关：智能开关 Pro（三开，控制镜前灯、主卫灯、排气扇）。</li>
+<li>传感器：人在传感器（洗澡、如厕时静止状态也能保持灯亮）。</li>
+<li>水浸传感器：放置于马桶后侧及洗手盆下方。</li>
+</ul></li>
+</ul>
+<h3 id="公卫-bathroom-2">6. 公卫 (Bathroom 2)</h3>
+<ul>
+<li><strong>控制：</strong>
+同主卫配置，人在传感器联动镜前灯与换气扇，实现“人来灯亮，人走延时关灯关排气”。</li>
+</ul>
+<h3 id="次卧-1-与-次卧-2书房-bedrooms">7. 次卧 1 与 次卧 2/书房
+(Bedrooms)</h3>
+<ul>
+<li><strong>控制：</strong> 采用普通灯具 +
+小米智能开关面板控制亮灭，床头放置无线开关做双控。</li>
+</ul>
+<hr />
+<h2
+id="第三部分系统集成与自动化场景-ha-apple-home">第三部分：系统集成与自动化场景
+(HA &amp; Apple Home)</h2>
+<h3 id="系统数据流与控制逻辑">1. 系统数据流与控制逻辑</h3>
+<ol type="1">
+<li><strong>硬件层（米家）：</strong>
+小米传感器检测到事件（如：有人移动、门锁开启） ➡️ 通过蓝牙 Mesh
+发送给<strong>小米中枢网关</strong>。</li>
+<li><strong>集成层（HA）：</strong> HA
+主机通过局域网/云端读取网关数据。HA 的自动化引擎（如
+Node-RED）执行本地逻辑（如：判断是否处于日落后 ➡️ 是 ➡️
+发送开灯指令）。</li>
+<li><strong>呈现层（Apple Home）：</strong> HA 通过 HomeKit Bridge
+插件将所有设备投射到 iPhone/iPad 的“家庭”App 中。用户可以使用 Apple UI
+划动控制，或对 HomePod 喊：“嘿 Siri，打开观影模式”。</li>
+</ol>
+<h3 id="核心智能场景设计">2. 核心智能场景设计</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">场景名称</th>
+<th style="text-align: left;">触发条件</th>
+<th style="text-align: left;">联动设备与动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>回家场景</strong></td>
+<td style="text-align: left;">智能锁指纹/人脸开门 +
+光线传感器检测光线暗</td>
+<td
+style="text-align: left;">玄关灯开启，客厅窗帘合上（如果白天则不合），客厅冷暖无主灯切换至温馨色温，中央空调自动调至常用温度。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>观影场景</strong></td>
+<td style="text-align: left;">手机/小爱/Siri 触发“观影模式”</td>
+<td style="text-align: left;">客厅无主灯调暗至 10%
+亮度，电视背景墙灯带调至弱光暖色，客厅双轨窗帘完全闭合。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>起夜场景</strong></td>
+<td style="text-align: left;">深夜（23:00 - 06:00）+
+主卧/床下人体传感器检测到动作</td>
+<td style="text-align: left;">主卧床底低亮度暖色灯带点亮，主卫镜前灯以
+15% 亮度微弱点亮（不刺眼），人离开后 2 分钟自动熄灭。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>离家场景</strong></td>
+<td style="text-align: left;">智能锁室外一键防盗锁门 / 所有人离家（HA
+定位）</td>
+<td
+style="text-align: left;">全屋灯具关闭，中央空调关闭，窗帘全部合上（防晒），扫地机器人开始清扫，水阀/燃气监控进入警戒状态。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>无感卫浴</strong></td>
+<td style="text-align: left;">卫生间人在传感器检测到有人</td>
+<td
+style="text-align: left;">自动点亮卫生间主灯；如果湿度过高，自动开启排气扇；检测到人离开
+5 分钟后，自动关闭灯光与排气扇。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</body>
+</html>
